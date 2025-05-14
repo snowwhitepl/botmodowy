@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Madame Stylé</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main>
+    <p class="quote">„Nie pytaj, co pasuje. Zapytaj, co zostaje w pamięci.”</p>
+
+    <div class="chat-box">
+      <div class="madame-sidebar">
+        <img src="img/madame.jpg" alt="Madame Stylé" class="portrait-inside" />
+      </div>
+      <div id="chat-content" class="chat-content"></div>
+    </div>
+
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Zadaj pytanie Madame..." />
+      <button id="send-btn">Wyślij</button>
+    </div>
+
+    <div class="random-question">
+      <button id="random-btn">Zaskocz mnie pytaniem do Madame</button>
+    </div>
+
+    <div class="toggle-voice">
+      <label>
+        <input type="checkbox" id="voice-toggle" checked />
+        Madame Stylé przemawia
+      </label>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

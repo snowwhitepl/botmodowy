@@ -51,17 +51,26 @@ function speak(text) {
   const utterance = new SpeechSynthesisUtterance(text);
   const voices = speechSynthesis.getVoices();
 
-  const frenchVoice = voices.find(voice =>
-    voice.lang.toLowerCase().includes("fr") ||
-    voice.name.toLowerCase().includes("french")
+  const polishVoice = voices.find(voice =>
+    voice.lang.toLowerCase().includes("pl") ||
+    voice.name.toLowerCase().includes("polish")
   );
 
-  utterance.voice = frenchVoice || voices[0];
+  const fallbackVoice = voices.find(voice =>
+    voice.lang.toLowerCase().includes("en")
+  );
+
+  utterance.voice = polishVoice || fallbackVoice || voices[0];
   utterance.rate = 0.95;
   utterance.pitch = 1.2;
   utterance.volume = 1;
 
   speechSynthesis.speak(utterance);
+}
+
+// Upewnij się, że głosy są dostępne
+if (typeof speechSynthesis !== "undefined") {
+  speechSynthesis.onvoiceschanged = () => {};
 }
 
 function getBotReply(input) {

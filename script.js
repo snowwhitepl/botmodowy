@@ -12,12 +12,12 @@ function handleInput() {
   const input = userInput.value.trim();
   if (!input) return;
 
-  appendMessage(input, "user");
+  appendMessage(input, "user"); 
   userInput.value = "";
 
   showTyping(() => {
     const reply = getBotReply(input);
-    appendMessage(reply, "bot");
+    appendMessage(reply, "bot"); 
     speak(reply);
   });
 }
@@ -49,7 +49,12 @@ function speak(text) {
   if (!voiceToggle.checked) return;
 
   const utterance = new SpeechSynthesisUtterance(text);
-  const voices = speechSynthesis.getVoices();
+  let voices = speechSynthesis.getVoices();
+
+  if (!voices.length) {
+    speechSynthesis.onvoiceschanged = () => speak(text);
+    return;
+  }
 
   const polishVoice = voices.find(voice =>
     voice.lang.toLowerCase().includes("pl") ||
@@ -68,8 +73,8 @@ function speak(text) {
   speechSynthesis.speak(utterance);
 }
 
-// Upewnij się, że głosy są dostępne
-if (typeof speechSynthesis !== "undefined") {
+speechSynthesis.getVoices();
+if (typeof speechSynthesis !== "undefined" && speechSynthesis.onvoiceschanged !== undefined) {
   speechSynthesis.onvoiceschanged = () => {};
 }
 
@@ -120,6 +125,22 @@ function getBotReply(input) {
     {
       keywords: ["minimalizm", "szafa kapsułowa"],
       reply: "Minimalizm to nie rezygnacja. To deklaracja: potrzebuję mniej, żeby znaczyć więcej."
+    },
+    {
+      keywords: ["instagram", "influencerki", "social media", "follow"],
+      reply: "Instagram? Świetne miejsce, by udawać życie i tracić styl na filtrach. Prawdziwa klasa nie potrzebuje lajków."
+    },
+    {
+      keywords: ["crocs", "klapki", "brzydkie buty"],
+      reply: "Crocs? Stylowa apokalipsa w plastiku. Noś je tylko, jeśli właśnie uciekasz z płonącego laboratorium."
+    },
+    {
+      keywords: ["luksus", "markowe", "drogie"],
+      reply: "Luksus nie leży w metce. Leży w tym, jak się zachowujesz, gdy nikt nie patrzy."
+    },
+    {
+      keywords: ["moda męska", "mężczyźni", "styl facetów"],
+      reply: "Styl mężczyzny poznasz nie po butach, ale po tym, jak reaguje na kobietę w lepszym płaszczu."
     }
   ];
 
@@ -144,17 +165,20 @@ const randomAnswers = {
   "Czy oversize to wymówka?": "Tylko dla tych, którzy nie potrafią nosić go z dumą. Reszcie daje wolność.",
   "Jak wyrazić bunt ubraniem?": "Załóż to, co cię uszczęśliwia i wkurza rodzinę. Bunt gotowy.",
   "Czy warto kupować fast fashion?": "Fast fashion to fast zapomnienie. Kupuj mniej, noś lepiej.",
-  "Czy styl może zastąpić charakter?": "Styl bez charakteru to wydmuszka. Charakter bez stylu — to zmarnowany potencjał."
+  "Czy styl może zastąpić charakter?": "Styl bez charakteru to wydmuszka. Charakter bez stylu — to zmarnowany potencjał.",
+  "Jakie mam szanse wyglądać dobrze w crocsach?": "Takie same jak croissant na siłowni — zerowe, ale przynajmniej zabawne.",
+  "Co myślisz o ubraniach z logo na pół torsu?": "Jeśli Twoją osobowość trzeba nadrukować na klacie — czas ją przemyśleć.",
+  "Co z instagramowymi trendami?": "Trend, który widzisz wszędzie, jest już martwy. Prawdziwa stylizacja to nekromancja — przywraca do życia to, co inni uznali za przestarzałe."
 };
 
 randomBtn.addEventListener("click", () => {
   const questions = Object.keys(randomAnswers);
   const random = questions[Math.floor(Math.random() * questions.length)];
-  appendMessage(random, "user");
+  appendMessage(random, "user"); // backtick
 
   showTyping(() => {
     const answer = randomAnswers[random];
-    appendMessage(answer, "bot");
+    appendMessage(answer, "bot"); // backtick
     speak(answer);
   });
 });

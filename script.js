@@ -15,10 +15,12 @@ function handleInput() {
   appendMessage(input, "user");
   userInput.value = "";
 
+  const reply = getBotReply(input);
   showTyping(() => {
-    const reply = getBotReply(input);
     appendMessage(reply, "bot");
-    speak(reply);
+    setTimeout(() => {
+      speak(reply);
+    }, 0); // wywołanie speak w kontekście kliknięcia
   });
 }
 
@@ -48,7 +50,6 @@ function speak(text) {
   const voiceToggle = document.getElementById("voice-toggle");
   if (!voiceToggle.checked) return;
 
-  const utterance = new SpeechSynthesisUtterance(text);
   let voices = speechSynthesis.getVoices();
 
   if (!voices.length) {
@@ -59,16 +60,10 @@ function speak(text) {
     return;
   }
 
-  const polishVoice = voices.find(voice =>
-    voice.lang.toLowerCase().includes("pl") ||
-    voice.name.toLowerCase().includes("polish")
-  );
+  const utterance = new SpeechSynthesisUtterance(text);
+  const polishVoice = voices.find(v => v.lang.includes("pl")) || voices[0];
 
-  const fallbackVoice = voices.find(voice =>
-    voice.lang.toLowerCase().includes("en")
-  );
-
-  utterance.voice = polishVoice || fallbackVoice || voices[0];
+  utterance.voice = polishVoice;
   utterance.rate = 0.95;
   utterance.pitch = 1.2;
   utterance.volume = 1;
@@ -179,9 +174,12 @@ randomBtn.addEventListener("click", () => {
   const questions = Object.keys(randomAnswers);
   const random = questions[Math.floor(Math.random() * questions.length)];
   appendMessage(random, "user");
+
   showTyping(() => {
     const answer = randomAnswers[random];
     appendMessage(answer, "bot");
-    speak(answer);
+    setTimeout(() => {
+      speak(answer);
+    }, 0); // wywołanie speak w kontekście kliknięcia
   });
 });

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test głosu</title>
+</head>
+<body>
+  <button id="speak-btn">Przemów, Madame</button>
+
+  <script>
+    document.getElementById("speak-btn").addEventListener("click", () => {
+      const msg = new SpeechSynthesisUtterance("To jest test. Mówię po polsku.");
+      const voices = speechSynthesis.getVoices();
+      const polish = voices.find(v => v.lang.includes("pl")) || voices[0];
+      msg.voice = polish;
+      speechSynthesis.speak(msg);
+    });
+
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => {
+      window.speechSynthesis.getVoices();
+    };
+  </script>
+</body>
+</html>

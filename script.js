@@ -12,12 +12,12 @@ function handleInput() {
   const input = userInput.value.trim();
   if (!input) return;
 
-  appendMessage(input, "user"); 
+  appendMessage(input, "user");
   userInput.value = "";
 
   showTyping(() => {
     const reply = getBotReply(input);
-    appendMessage(reply, "bot"); 
+    appendMessage(reply, "bot");
     speak(reply);
   });
 }
@@ -52,7 +52,10 @@ function speak(text) {
   let voices = speechSynthesis.getVoices();
 
   if (!voices.length) {
-    speechSynthesis.onvoiceschanged = () => speak(text);
+    speechSynthesis.onvoiceschanged = () => {
+      voices = speechSynthesis.getVoices();
+      speak(text);
+    };
     return;
   }
 
@@ -73,10 +76,11 @@ function speak(text) {
   speechSynthesis.speak(utterance);
 }
 
-speechSynthesis.getVoices();
-if (typeof speechSynthesis !== "undefined" && speechSynthesis.onvoiceschanged !== undefined) {
-  speechSynthesis.onvoiceschanged = () => {};
-}
+// iOS „rozgrzewka” głosu przy pierwszym kliknięciu
+document.addEventListener("click", () => {
+  const dummy = new SpeechSynthesisUtterance(" ");
+  speechSynthesis.speak(dummy);
+}, { once: true });
 
 function getBotReply(input) {
   const msg = input.toLowerCase();
@@ -174,11 +178,10 @@ const randomAnswers = {
 randomBtn.addEventListener("click", () => {
   const questions = Object.keys(randomAnswers);
   const random = questions[Math.floor(Math.random() * questions.length)];
-  appendMessage(random, "user"); // backtick
-
+  appendMessage(random, "user");
   showTyping(() => {
     const answer = randomAnswers[random];
-    appendMessage(answer, "bot"); // backtick
+    appendMessage(answer, "bot");
     speak(answer);
   });
 });
